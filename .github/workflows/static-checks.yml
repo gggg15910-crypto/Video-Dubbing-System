@@ -1,0 +1,66 @@
+name: Validate Dubby notebook and Arabic languages
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile Python source files
+        run: python -m compileall -q dubby
+      - name: Validate notebook code syntax
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path("notebooks/Dubby_Colab.ipynb")
+          notebook = json.loads(path.read_text(encoding="utf-8"))
+          count = 0
+          for index, cell in enumerate(notebook.get("cells", [])):
+              if cell.get("cell_type") != "code":
+                  continue
+              source = "".join(cell.get("source", []))
+              # Ignore Colab/IPython magics when compiling ordinary Python syntax.
+              cleaned = "\n".join(
+                  line for line in source.splitlines()
+                  if not line.lstrip().startswith(("%", "!"))
+              )
+              compile(cleaned, f"{path}:cell-{index}", "exec")
+              count += 1
+          print(f"Validated Python syntax in {count} notebook code cells.")
+          PY
+      - name: Check Arabic language registry
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+
+          spec = importlib.util.spec_from_file_location(
+              "dubby_languages", Path("dubby/languages.py")
+          )
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+
+          assert "arb" in module.TARGET_CODES, module.TARGET_CODES
+          assert "arz" in module.TARGET_CODES, module.TARGET_CODES
+          assert module.get("arb").rtl is True
+          assert module.get("arz").rtl is True
+          assert module.get("en").source is True
+          assert module.from_iso("en") == "en"
+          print("Arabic MSA, Egyptian Arabic, RTL, and source detection checks passed.")
+          PY
