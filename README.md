@@ -14,7 +14,7 @@
 </p>
 
 <p>
-  <a href="https://colab.research.google.com/github/MohammedAly22/Dubby/blob/main/notebooks/Dubby_Colab.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F4E03A?style=for-the-badge&logo=googlecolab&logoColor=black&labelColor=9BD23C" alt="Open in Colab" /></a>
+  <a href="https://colab.research.google.com/github/gggg15910-crypto/Video-Dubbing-System/blob/main/notebooks/Dubby_Colab.ipynb"><img src="https://img.shields.io/badge/Open%20in-Colab-F4E03A?style=for-the-badge&logo=googlecolab&logoColor=black&labelColor=9BD23C" alt="Open in Colab" /></a>
   <a href="#-installation"><img src="https://img.shields.io/badge/Run-Locally-9BD23C?style=for-the-badge&logo=anaconda&logoColor=white&labelColor=1a1f14" alt="Run locally" /></a>
   <a href="#-languages--recommended-engines"><img src="https://img.shields.io/badge/Languages-9-F4E03A?style=for-the-badge&logo=googletranslate&logoColor=black&labelColor=1a1f14" alt="9 languages" /></a>
   <a href="#-engines"><img src="https://img.shields.io/badge/Engines-28-9BD23C?style=for-the-badge&logo=huggingface&logoColor=black&labelColor=1a1f14" alt="28 engines" /></a>
@@ -104,7 +104,7 @@ Dubby dubs **from 8 spoken languages into 9 dub languages**. Set the spoken lang
       <h3>☁️ Google Colab</h3>
       No local install and a free GPU. Isolated venvs, and every cell fails loudly on errors.
       <br /><br />
-      <a href="https://colab.research.google.com/github/MohammedAly22/Dubby/blob/main/notebooks/Dubby_Colab.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a>
+      <a href="https://colab.research.google.com/github/gggg15910-crypto/Video-Dubbing-System/blob/main/notebooks/Dubby_Colab.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab" /></a>
     </td>
     <td width="33%" valign="top">
       <h3>💻 Local studio</h3>
@@ -478,7 +478,7 @@ dubby dub "URL" --target es --captions both --export ~/Videos/Dubbed
 
 ## ☁️ Google Colab
 
-<a href="https://colab.research.google.com/github/MohammedAly22/Dubby/blob/main/notebooks/Dubby_Colab.ipynb"><img src="https://img.shields.io/badge/Open%20the%20notebook%20in-Google%20Colab-F4E03A?style=for-the-badge&logo=googlecolab&logoColor=black&labelColor=9BD23C" alt="Open in Colab" /></a>
+<a href="https://colab.research.google.com/github/gggg15910-crypto/Video-Dubbing-System/blob/main/notebooks/Dubby_Colab.ipynb"><img src="https://img.shields.io/badge/Open%20the%20notebook%20in-Google%20Colab-F4E03A?style=for-the-badge&logo=googlecolab&logoColor=black&labelColor=9BD23C" alt="Open in Colab" /></a>
 
 Run [`notebooks/Dubby_Colab.ipynb`](notebooks/Dubby_Colab.ipynb) cell by cell:
 
