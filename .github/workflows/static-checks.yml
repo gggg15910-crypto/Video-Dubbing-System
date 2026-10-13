@@ -44,6 +44,10 @@ jobs:
               count += 1
           print(f"Validated Python syntax in {count} notebook code cells.")
           PY
+      - name: Install lightweight test dependency
+        run: python -m pip install pytest
+      - name: Test text normalization (including Arabic)
+        run: python -m pytest -q tests/test_text_normalization.py
       - name: Check Arabic language registry
         run: |
           python - <<'PY'
