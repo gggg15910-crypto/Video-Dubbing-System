@@ -74,8 +74,11 @@ public class MainActivity extends Activity {
         serverUrl = new EditText(this);
         serverUrl.setSingleLine(true); serverUrl.setHint("http://عنوان-الخادم:8000");
         serverUrl.setTextSize(14); serverUrl.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_VARIATION_URI);
+        serverUrl.setText(getPreferences(MODE_PRIVATE).getString("server_url", ""));
         serverUrl.setPadding(dp(12), dp(10), dp(12), dp(10)); serverUrl.setBackgroundColor(0xFFFFFFFF);
         page.addView(serverUrl, params());
+        Button check = button("اختبار الاتصال بالخادم"); page.addView(check, params());
+        check.setOnClickListener(v -> checkServer(check));
 
         TextView note = new TextView(this);
         note.setText("يتطلب التطبيق تشغيل خادم Dubby على جهاز أو خادم متاح عبر الشبكة. يرفع الفيديو إلى الخادم لإنشاء مشروع؛ لا تضع مفاتيح API السرية في التطبيق.");
@@ -92,6 +95,7 @@ public class MainActivity extends Activity {
         open.setOnClickListener(v -> {
             String base = normalizedBase();
             if (base == null) { result.setText("أدخل عنوان الخادم أولاً."); return; }
+            getPreferences(MODE_PRIVATE).edit().putString("server_url", base).apply();
             try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(base))); }
             catch (Exception e) { result.setText("تعذر فتح المتصفح: " + e.getMessage()); }
         });
@@ -104,6 +108,7 @@ public class MainActivity extends Activity {
         if (base == null || !(base.startsWith("http://") || base.startsWith("https://"))) {
             result.setText("أدخل عنوان خادم صحيحاً يبدأ بـ http:// أو https://"); return;
         }
+        getPreferences(MODE_PRIVATE).edit().putString("server_url", base).apply();
         final String src = new String[]{"auto","en","ar","fr","es","it","hi","zh","ja"}[source.getSelectedItemPosition()];
         final String dst = new String[]{"arb","arz","en","fr","es","it","hi","zh","ja"}[target.getSelectedItemPosition()];
         final Uri video = selectedVideo;
@@ -154,6 +159,38 @@ public class MainActivity extends Activity {
                     start.setEnabled(true);
                 });
             } finally { if (conn != null) conn.disconnect(); }
+        });
+    }
+
+    private void checkServer(Button check) {
+        final String base = normalizedBase();
+        if (base == null || !(base.startsWith("http://") || base.startsWith("https://"))) {
+            result.setText("أدخل عنوان خادم صحيحاً يبدأ بـ http:// أو https://");
+            return;
+        }
+        getPreferences(MODE_PRIVATE).edit().putString("server_url", base).apply();
+        check.setEnabled(false);
+        check.setText("جارٍ اختبار الاتصال...");
+        result.setText("جارٍ التحقق من خادم Dubby...");
+        worker.execute(() -> {
+            HttpURLConnection conn = null;
+            try {
+                conn = (HttpURLConnection) new URL(base + "/api/system").openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(15000);
+                int code = conn.getResponseCode();
+                InputStream response = code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream();
+                String body = readAll(response);
+                if (code < 200 || code >= 300) throw new IOException("HTTP " + code + ": " + body);
+                main.post(() -> result.setText("نجح الاتصال بخادم Dubby. يمكنك الآن اختيار الفيديو ورفعه."));
+            } catch (Exception e) {
+                String msg = e.getMessage() == null ? e.toString() : e.getMessage();
+                main.post(() -> result.setText("فشل الاتصال. تأكد أن الخادم يعمل وأن العنوان متاح من الهاتف. التفاصيل: " + msg));
+            } finally {
+                if (conn != null) conn.disconnect();
+                main.post(() -> { check.setEnabled(true); check.setText("اختبار الاتصال بالخادم"); });
+            }
         });
     }
 
