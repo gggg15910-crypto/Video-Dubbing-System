@@ -48,12 +48,14 @@ jobs:
         run: |
           python - <<'PY'
           import importlib.util
+          import sys
           from pathlib import Path
 
           spec = importlib.util.spec_from_file_location(
               "dubby_languages", Path("dubby/languages.py")
           )
           module = importlib.util.module_from_spec(spec)
+          sys.modules[spec.name] = module
           spec.loader.exec_module(module)
 
           assert "arb" in module.TARGET_CODES, module.TARGET_CODES
